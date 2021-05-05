@@ -1,5 +1,6 @@
 export default [
 	{
+		id: 1,
 		name: 'Plan a Trip',
 		color: '#24a6d9',
 		todos: [
@@ -22,6 +23,7 @@ export default [
 		],
 	},
 	{
+		id: 2,
 		name: 'Cancel a trip',
 		color: '#8022d9',
 		todos: [
@@ -44,6 +46,7 @@ export default [
 		],
 	},
 	{
+		id: 3,
 		name: 'BirthDay',
 		color: '#a225a3',
 		todos: [
