@@ -1,16 +1,50 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native';
+import {
+	FlatList,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+	Modal,
+	LogBox,
+	ActivityIndicator,
+} from 'react-native';
+
 import Colors from './Colors';
 import { AntDesign } from '@expo/vector-icons';
-import tempData from './tempData';
 import TodoList from './Components/TodoList';
 import AddListModal from './Components/AddListModal';
+import Fire from './Components/firebase';
 export default class App extends React.Component {
 	state = {
 		addTodoVisible: false,
-		lists: tempData,
+		lists: [],
+		user: {},
+		loading: true,
 	};
+	componentDidMount() {
+		LogBox.ignoreLogs(['Setting a timer ']);
+		// @ts-ignore
+		firebase = new Fire((err, user) => {
+			if (err) {
+				return alert('Something went wrong');
+			}
+			// @ts-ignore
+			firebase.getLists((lists) => {
+				// console.log('[App.js:23] - lists ', lists);
+				this.setState({ lists, user }, () => {
+					this.setState({ loading: false });
+				});
+			});
+			// console.log('[App.js:43] - user ', user);
+			this.setState({ user });
+		});
+	}
 
+	componentWillUnmount() {
+		// @ts-ignore
+		firebase.detach();
+	}
 	toggleAddTodoVisible() {
 		this.setState({ addTodoVisible: !this.state.addTodoVisible });
 	}
@@ -20,19 +54,35 @@ export default class App extends React.Component {
 	};
 
 	addList = (list) => {
-		this.setState({
-			lists: [...this.state.lists, { ...list, id: this.state.lists.length + 1, todos: [] }],
+		// this.setState({
+		// 	lists: [...this.state.lists, { ...list, id: this.state.lists.length + 1, todos: [] }],
+		// });
+		// @ts-ignore
+		firebase.addList({
+			name: list.name,
+			color: list.color,
+			todos: [],
 		});
 	};
 
 	updateList = (list) => {
-		this.setState({
-			lists: this.state.lists.map((item) => {
-				return item.id === list.id ? list : item;
-			}),
-		});
+		// this.setState({
+		// 	lists: this.state.lists.map((item) => {
+		// 		return item.id === list.id ? list : item;
+		// 	}),
+		// });
+		// @ts-ignore
+		firebase.updateList(list);
 	};
+
 	render() {
+		if (this.state.loading) {
+			return (
+				<View style={styles.container}>
+					<ActivityIndicator size='large' color={Colors.blue} />
+				</View>
+			);
+		}
 		return (
 			<View style={styles.container}>
 				<Modal
@@ -41,6 +91,9 @@ export default class App extends React.Component {
 					onRequestClose={() => this.toggleAddTodoVisible()}>
 					<AddListModal closeModal={() => this.toggleAddTodoVisible()} addList={this.addList} />
 				</Modal>
+				<View>
+					<Text>User: {this.state.user.uid}</Text>
+				</View>
 				<View style={{ flexDirection: 'row' }}>
 					<View style={styles.divider} />
 					<Text style={styles.title}>
@@ -57,7 +110,7 @@ export default class App extends React.Component {
 				<View style={{ height: 275, marginLeft: 0 }}>
 					<FlatList
 						data={this.state.lists}
-						keyExtractor={(item) => item.name}
+						keyExtractor={(item) => item.id.toString()}
 						horizontal
 						showsHorizontalScrollIndicator={false}
 						renderItem={({ item }) => this.renderList(item)}
