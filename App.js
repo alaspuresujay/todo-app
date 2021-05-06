@@ -8,13 +8,17 @@ import {
 	Modal,
 	LogBox,
 	ActivityIndicator,
+	Animated,
 } from 'react-native';
 
 import Colors from './Colors';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+
 import TodoList from './Components/TodoList';
 import AddListModal from './Components/AddListModal';
 import Fire from './Components/firebase';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 export default class App extends React.Component {
 	state = {
 		addTodoVisible: false,
@@ -30,7 +34,7 @@ export default class App extends React.Component {
 				return alert('Something went wrong');
 			}
 			// @ts-ignore
-			firebase.getLists((lists) => {
+			firebase.getLists(lists => {
 				// console.log('[App.js:23] - lists ', lists);
 				this.setState({ lists, user }, () => {
 					this.setState({ loading: false });
@@ -43,17 +47,26 @@ export default class App extends React.Component {
 
 	componentWillUnmount() {
 		// @ts-ignore
-		firebase.detach();
+		// firebase.detach();
 	}
 	toggleAddTodoVisible() {
 		this.setState({ addTodoVisible: !this.state.addTodoVisible });
 	}
 
-	renderList = (list) => {
+	renderList = list => {
 		return <TodoList list={list} updateList={this.updateList} />;
 	};
+	rightActions = (dragX, index) => {
+		return (
+			<TouchableOpacity onPress={() => console.log('[TodoModal.js:67] - touch ')}>
+				<Animated.View>
+					<Animated.Text>Delete</Animated.Text>
+				</Animated.View>
+			</TouchableOpacity>
+		);
+	};
 
-	addList = (list) => {
+	addList = list => {
 		// this.setState({
 		// 	lists: [...this.state.lists, { ...list, id: this.state.lists.length + 1, todos: [] }],
 		// });
@@ -65,7 +78,7 @@ export default class App extends React.Component {
 		});
 	};
 
-	updateList = (list) => {
+	updateList = list => {
 		// this.setState({
 		// 	lists: this.state.lists.map((item) => {
 		// 		return item.id === list.id ? list : item;
@@ -91,9 +104,11 @@ export default class App extends React.Component {
 					onRequestClose={() => this.toggleAddTodoVisible()}>
 					<AddListModal closeModal={() => this.toggleAddTodoVisible()} addList={this.addList} />
 				</Modal>
+
 				<View>
 					<Text>User: {this.state.user.uid}</Text>
 				</View>
+
 				<View style={{ flexDirection: 'row' }}>
 					<View style={styles.divider} />
 					<Text style={styles.title}>
@@ -101,16 +116,18 @@ export default class App extends React.Component {
 					</Text>
 					<View style={styles.divider} />
 				</View>
+
 				<View style={{ marginVertical: 48 }}>
 					<TouchableOpacity style={styles.addList} onPress={() => this.toggleAddTodoVisible()}>
 						<AntDesign name='plus' size={16} color={Colors.blue} />
 					</TouchableOpacity>
 					<Text style={styles.add}>Add List</Text>
 				</View>
+
 				<View style={{ height: 275, marginLeft: 0 }}>
 					<FlatList
 						data={this.state.lists}
-						keyExtractor={(item) => item.id.toString()}
+						keyExtractor={item => item.id.toString()}
 						horizontal
 						showsHorizontalScrollIndicator={false}
 						renderItem={({ item }) => this.renderList(item)}
@@ -140,6 +157,12 @@ const styles = StyleSheet.create({
 		fontWeight: '800',
 		color: Colors.black,
 		paddingHorizontal: 64,
+	},
+	todoContainer: {
+		paddingVertical: 16,
+		flexDirection: 'row',
+		alignItems: 'center',
+		borderWidth: 0.5,
 	},
 	addList: {
 		borderWidth: 2,

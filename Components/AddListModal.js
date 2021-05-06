@@ -6,9 +6,11 @@ import {
 	KeyboardAvoidingView,
 	TouchableOpacity,
 	TextInput,
+	Animated,
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import Colors from '../Colors';
+import { Swipeable } from 'react-native-gesture-handler';
 
 export default class AddListModal extends Component {
 	backgroundColors = ['#5cd859', '#24a6d9', '#595bd9', '#8022d9', '#d159d8', '#d85963', '#d88559'];
@@ -18,7 +20,7 @@ export default class AddListModal extends Component {
 	};
 
 	renderColors() {
-		return this.backgroundColors.map((color) => {
+		return this.backgroundColors.map(color => {
 			return (
 				<TouchableOpacity
 					key={color}
@@ -39,6 +41,15 @@ export default class AddListModal extends Component {
 			this.props.closeModal();
 		}
 	};
+	rightActions = (dragX, index) => {
+		return (
+			<TouchableOpacity onPress={() => console.log('[TodoModal.js:67] - touch ')}>
+				<Animated.View>
+					<Animated.Text>Delete</Animated.Text>
+				</Animated.View>
+			</TouchableOpacity>
+		);
+	};
 	render() {
 		return (
 			<KeyboardAvoidingView style={styles.container}>
@@ -47,12 +58,13 @@ export default class AddListModal extends Component {
 					onPress={this.props.closeModal}>
 					<AntDesign name='close' size={24} color={Colors.black} />
 				</TouchableOpacity>
+
 				<View style={{ alignSelf: 'stretch', marginHorizontal: 32 }}>
 					<Text style={styles.title}>Create Todo List</Text>
 					<TextInput
 						style={styles.input}
 						placeholder='List name?'
-						onChangeText={(text) => this.setState({ name: text })}
+						onChangeText={text => this.setState({ name: text })}
 					/>
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 }}>
 						{this.renderColors()}

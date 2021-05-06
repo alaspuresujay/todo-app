@@ -9,11 +9,12 @@ export default class TodoList extends React.Component {
 	};
 
 	toggleListModal() {
+		console.log('[TodoList.js:12] - pressed ');
 		this.setState({ showListVisible: !this.state.showListVisible });
 	}
 	render() {
 		const list = this.props.list;
-		const completedCount = list.todos.filter((todo) => todo.completed).length;
+		const completedCount = list.todos.filter(todo => todo.completed).length;
 		const remainingCount = list.todos.length - completedCount;
 
 		return (
