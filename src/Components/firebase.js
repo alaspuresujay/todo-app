@@ -1,16 +1,15 @@
 import firebase from 'firebase';
-// import 'firebase/auth';
 import '@firebase/firestore';
-// import 'firebase/storage';
+import config from '../../config';
 
 const firebaseConfig = {
-	apiKey: 'AIzaSyCq7pOWGXxtQdQfZMj2oOKWQlXe9MvLnJ8',
-	authDomain: 'clone-project-sujay.firebaseapp.com',
-	// databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
-	projectId: 'clone-project-sujay',
-	storageBucket: 'clone-project-sujay.appspot.com',
-	messagingSenderId: '419718453701',
-	appId: '1:419718453701:web:513af44e87860a5e9153ac',
+	apiKey: config.API_KEY,
+	authDomain: config.AUTH_DOMAIN,
+	databaseURL: config.DATABASE_URL,
+	projectId: config.PROJECT_ID,
+	storageBucket: config.STORAGE_BUCKET,
+	messagingSenderId: config.MESSAGING_SENDER_ID,
+	appId: config.APP_ID,
 };
 
 class Fire {
@@ -21,14 +20,14 @@ class Fire {
 		if (!firebase.apps.length) {
 			firebase.initializeApp(firebaseConfig);
 		}
-		firebase.auth().onAuthStateChanged((user) => {
+		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
 				callback(null, user);
 			} else {
 				firebase
 					.auth()
 					.signInAnonymously()
-					.catch((err) => {
+					.catch(err => {
 						console.log('[firebase.js:25] - err ', err);
 						callback(err);
 					});
@@ -38,10 +37,10 @@ class Fire {
 
 	getLists(callback) {
 		let ref = this.ref.orderBy('name');
-		this.unsubscribe = ref.onSnapshot((snapshot) => {
+		this.unsubscribe = ref.onSnapshot(snapshot => {
 			let lists = [];
 
-			snapshot.forEach((doc) => {
+			snapshot.forEach(doc => {
 				lists.push({ id: doc.id, ...doc.data() });
 			});
 			// console.log('[firebase.js:48] - list ', lists);

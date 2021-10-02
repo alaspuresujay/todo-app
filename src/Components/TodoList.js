@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Colors from '../Colors';
+import Colors from '../../Colors';
 import TodoModal from './TodoModal';
 
 export default class TodoList extends React.Component {
@@ -9,7 +9,6 @@ export default class TodoList extends React.Component {
 	};
 
 	toggleListModal() {
-		console.log('[TodoList.js:12] - pressed ');
 		this.setState({ showListVisible: !this.state.showListVisible });
 	}
 	render() {

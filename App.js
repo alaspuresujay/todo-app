@@ -9,24 +9,31 @@ import {
 	LogBox,
 	ActivityIndicator,
 	Animated,
+	StatusBar,
 } from 'react-native';
 
 import Colors from './Colors';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { AntDesign } from '@expo/vector-icons';
 
-import TodoList from './Components/TodoList';
-import AddListModal from './Components/AddListModal';
-import Fire from './Components/firebase';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import TodoList from './src/Components/TodoList';
+import AddListModal from './src/Components/AddListModal';
+import Fire from './src/Components/firebase';
+
 export default class App extends React.Component {
 	state = {
 		addTodoVisible: false,
 		lists: [],
 		user: {},
 		loading: true,
+		ballAnimation: new Animated.Value(0),
+		currTime: null,
 	};
 	componentDidMount() {
+		setInterval(() => {
+			this.setState({
+				curTime: new Date().toLocaleString(),
+			});
+		}, 1000);
 		LogBox.ignoreLogs(['Setting a timer ']);
 		// @ts-ignore
 		firebase = new Fire((err, user) => {
@@ -35,19 +42,17 @@ export default class App extends React.Component {
 			}
 			// @ts-ignore
 			firebase.getLists(lists => {
-				// console.log('[App.js:23] - lists ', lists);
 				this.setState({ lists, user }, () => {
 					this.setState({ loading: false });
 				});
 			});
-			// console.log('[App.js:43] - user ', user);
 			this.setState({ user });
 		});
 	}
 
 	componentWillUnmount() {
 		// @ts-ignore
-		// firebase.detach();
+		firebase.detach();
 	}
 	toggleAddTodoVisible() {
 		this.setState({ addTodoVisible: !this.state.addTodoVisible });
@@ -67,9 +72,6 @@ export default class App extends React.Component {
 	};
 
 	addList = list => {
-		// this.setState({
-		// 	lists: [...this.state.lists, { ...list, id: this.state.lists.length + 1, todos: [] }],
-		// });
 		// @ts-ignore
 		firebase.addList({
 			name: list.name,
@@ -79,11 +81,6 @@ export default class App extends React.Component {
 	};
 
 	updateList = list => {
-		// this.setState({
-		// 	lists: this.state.lists.map((item) => {
-		// 		return item.id === list.id ? list : item;
-		// 	}),
-		// });
 		// @ts-ignore
 		firebase.updateList(list);
 	};
@@ -96,8 +93,10 @@ export default class App extends React.Component {
 				</View>
 			);
 		}
+
 		return (
 			<View style={styles.container}>
+				<StatusBar backgroundColor='#fff' />
 				<Modal
 					animationType='slide'
 					visible={this.state.addTodoVisible}
@@ -106,7 +105,7 @@ export default class App extends React.Component {
 				</Modal>
 
 				<View>
-					<Text>User: {this.state.user.uid}</Text>
+					<Text style={{ marginTop: 15 }}>Date: {this.state.curTime}</Text>
 				</View>
 
 				<View style={{ flexDirection: 'row' }}>
@@ -133,6 +132,9 @@ export default class App extends React.Component {
 						renderItem={({ item }) => this.renderList(item)}
 						keyboardShouldPersistTaps='always'
 					/>
+				</View>
+				<View>
+					<Text>User: {this.state.user.uid}</Text>
 				</View>
 			</View>
 		);

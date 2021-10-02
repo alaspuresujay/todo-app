@@ -9,7 +9,7 @@ import {
 	Animated,
 } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import Colors from '../Colors';
+import Colors from '../../Colors';
 import { Swipeable } from 'react-native-gesture-handler';
 
 export default class AddListModal extends Component {

@@ -3,16 +3,14 @@ import {
 	Text,
 	StyleSheet,
 	View,
-	SafeAreaView,
 	TouchableOpacity,
 	FlatList,
-	KeyboardAvoidingView,
 	TextInput,
 	Keyboard,
 	Animated,
 } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import Colors from '../Colors';
+import Colors from '../../Colors';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -147,10 +145,6 @@ export default class TodoModal extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		//,
-		// backgroundColor: 'rgba(0,0,0,0.2)',
-		// justifyContent: 'center',
-		// alignItems: 'center',
 	},
 	section: {
 		// flex: 1,
