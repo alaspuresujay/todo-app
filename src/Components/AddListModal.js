@@ -8,9 +8,8 @@ import {
 	TextInput,
 	Animated,
 } from 'react-native';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import Colors from '../../Colors';
-import { Swipeable } from 'react-native-gesture-handler';
 
 export default class AddListModal extends Component {
 	backgroundColors = ['#5cd859', '#24a6d9', '#595bd9', '#8022d9', '#d159d8', '#d85963', '#d88559'];

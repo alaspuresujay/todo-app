@@ -43,7 +43,6 @@ class Fire {
 			snapshot.forEach(doc => {
 				lists.push({ id: doc.id, ...doc.data() });
 			});
-			// console.log('[firebase.js:48] - list ', lists);
 			callback(lists);
 		});
 	}

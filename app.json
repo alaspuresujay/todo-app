@@ -1,10 +1,10 @@
 {
 	"expo": {
 		"name": "todo-app",
-		"slug": "todo-app",
+		"slug": "todo-app-sujay",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/icon.png",
+		"icon": "./assets/adaptive-icon.png",
 		"splash": {
 			"image": "./assets/splash.png",
 			"resizeMode": "contain",
